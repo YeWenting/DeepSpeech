@@ -5,14 +5,14 @@ def preprocess_units(filename="units.txt"):
     all_units_dict = {}
     for line in open(filename):
         wav_filename = line.split()[0] + '.wav'
-        new_au_list, au_list = line.split()[1], line.split()[1:]
+        new_au_list, au_list = line.split()[1:2], line.split()[1:]
 
         # Merge the same symbol
         for idx in range(1, len(au_list)):
             if au_list[idx] != au_list[idx - 1]:
                 new_au_list.append(au_list[idx])
 
-        all_units_dict[wav_filename] = new_au_list
+        all_units_dict[wav_filename] = "".join(new_au_list)
     return all_units_dict
 
 
@@ -28,10 +28,11 @@ def preprocess_zerospeech(root_path, dev_split=0.1):
     print(f"Generating train/dev dataset...")
     for wav_filename in os.listdir(datapath):
         wav_filepath = os.path.join(datapath, wav_filename)
-        data.append((wav_filename, os.path.getsize(wav_filepath), units_dict[wav_filename]))
+        data.append((os.path.abspath(wav_filepath), os.path.getsize(wav_filepath), units_dict[wav_filename]))
 
     # Train-dev split
-    dev_data, train_data = data[:len(data) * dev_split], data[len(data) * dev_split:]
+    split_idx = int(len(data) * dev_split)
+    dev_data, train_data = data[:split_idx], data[split_idx:]
     print(f"train length: {len(train_data)}, dev length: {len(dev_data)}")
 
     # Save to csv
