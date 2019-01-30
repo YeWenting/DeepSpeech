@@ -12,7 +12,7 @@ def preprocess_units(filename="units.txt"):
             if au_list[idx] != au_list[idx - 1]:
                 new_au_list.append(au_list[idx])
 
-        all_units_dict[wav_filename] = "".join(new_au_list)
+        all_units_dict[wav_filename] = " ".join(new_au_list)
     return all_units_dict
 
 
